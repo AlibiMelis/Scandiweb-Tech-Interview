@@ -1,0 +1,123 @@
+.progress-bar {
+  --progress-checkpoint-size: 3rem;
+  --progress-step-height: 4px;
+  --step-animation-time: 1000ms;
+  --checkpoint-animation-time: 300ms;
+
+  width: 100%;
+  background: var(--secondary-base-color);
+  display: flex;
+  align-items: center;
+
+  padding: 2rem 0 4rem;
+
+  .step {
+    height: var(--progress-step-height);
+    border-radius: calc(var(--progress-step-height) / 2);
+    overflow: hidden;
+    flex: 1 1 0;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    &::before {
+      content: "";
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: var(--secondary-dark-color);
+    }
+
+    &:first-child {
+      flex: 2 1 0;
+      border-bottom-left-radius: 0;
+      border-top-left-radius: 0;
+    }
+    &:last-child {
+      flex: 2 1 0;
+      border-bottom-right-radius: 0;
+      border-top-right-radius: 0;
+    }
+  }
+
+  .step.passed {
+    &::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 100%;
+      height: 100%;
+      background: var(--primary-dark-color);
+
+      animation: progress-step var(--step-animation-time) ease-in-out;
+      animation-fill-mode: forwards;
+    }
+    &:first-child::after {
+      animation-delay: 0ms;
+    }
+  }
+
+  .checkpoint {
+    width: var(--progress-checkpoint-size);
+    height: var(--progress-checkpoint-size);
+    margin: 0 calc(var(--progress-checkpoint-size) / 4);
+    background: var(--secondary-dark-color);
+    border-radius: 50%;
+    font-weight: bold;
+
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    &::before {
+      content: attr(data-index);
+      color: $white;
+    }
+    &::after {
+      content: attr(data-label);
+      white-space: nowrap;
+      position: absolute;
+      transform: translateY(calc(var(--progress-checkpoint-size) / 2 + 80%));
+    }
+  }
+
+  .checkpoint.active {
+    animation: checkpoint-activation var(--checkpoint-animation-time) ease-out var(--step-animation-time);
+    animation-fill-mode: forwards;
+  }
+
+  .checkpoint.passed {
+    background: var(--primary-dark-color);
+    &::before {
+      content: "";
+      position: absolute;
+      width: calc(var(--progress-checkpoint-size) / 6);
+      height: calc(var(--progress-checkpoint-size) / 3);
+      border: solid $white;
+      border-width: 0 2px 2px 0;
+      transform: translateY(-1px) rotate(45deg);
+
+      transition: all var(--checkpoint-animation-time) ease-in;
+    }
+  }
+}
+
+@keyframes progress-step {
+  0% {
+    right: 100%;
+  }
+  100% {
+    right: 0%;
+  }
+}
+
+@keyframes checkpoint-activation {
+  0% {
+    background: var(--secondary-dark-color);
+  }
+  100% {
+    background: var(--primary-dark-color);
+  }
+}
